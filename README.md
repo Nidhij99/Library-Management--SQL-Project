@@ -175,9 +175,50 @@ where reg_date>=current_date - interval 180 day;
 ```
 
 **Q10.List Employees with Their Branch Manager's Name and their branch details.**
+```sql
+Select b.manager_id, e1.*, e2.emp_name as manager_name
+from employees as e1
+join branch as b
+on e1.branch_id=b.branch_id
+join employees as e2
+on e2.emp_id = b.manager_id
+```
 
+**Q11. Create a Table of Books with Rental Price Above a Certain Threshold**:
+```SQL
+create table expensive_books as
+SELECT * FROM books
+WHERE rental_price > 7;
+```
 
+**Q12. Retrieve the List of Books Not Yet Returned**
+```sql
+select *
+from issued_status as i
+left join return_status as r
+on r.issued_id = i.issued_id
+where r.return_id is null;
+```
 
+**Q13. Identify Members with Overdue Books.**  
+Write a query to identify members who have overdue books (assume a 30-day return period). Display the member's_id, member's name, book title, issue date, and days overdue.
+```SQL
+select i.issued_member_id, m.member_name, i.issued_date , r.return_date, b.book_title, datediff(current_date, issued_date) as overdue
+from members as m
+join issued_status as i
+on m.member_id=i.issued_member_id
+join books as b
+on b.isbn=i.issued_book_isbn
+left join return_status as r 
+on r.issued_id=i.issued_id
+Where (r.return_date is null and datediff(current_date, issued_date) >30)
+order by i.issued_member_id;
+```
+
+**Q14: Update Book Status on Return**  
+Write a query to update the status of books in the books table to "Yes" when they are returned (based on entries in the return_status table).
+```sql
+select 
 
 
 
